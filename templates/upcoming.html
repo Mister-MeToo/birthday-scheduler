@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upcoming Birthdays</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            cursor: pointer;
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>🎂 Upcoming Birthdays</h1>
+
+    <a href="/"><button>Home</button></a>
+    <a href="/birthdays"><button>View Birthdays</button></a>
+
+    <br><br>
+
+    {% if upcoming %}
+
+    <table>
+
+        <tr>
+            <th>Name</th>
+            <th>Birthday</th>
+            <th>Days Away</th>
+            <th>WhatsApp</th>
+        </tr>
+
+        {% for person in upcoming %}
+
+        <tr>
+
+            <td>{{ person.name }}</td>
+
+            <td>{{ person.birthday }}</td>
+
+            <td>
+                {% if person.days == 0 %}
+                    TODAY 🎉
+                {% elif person.days == 1 %}
+                    Tomorrow
+                {% else %}
+                    {{ person.days }} days
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{{ person.whatsapp_link }}" target="_blank">
+                    <button>WhatsApp</button>
+                </a>
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% else %}
+
+        <p>No birthdays in the next 30 days.</p>
+
+    {% endif %}
+
+</body>
+</html>

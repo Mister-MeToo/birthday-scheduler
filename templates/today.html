@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Today's Birthdays</title>
+</head>
+<body>
+
+    <h1>🎉 Today's Birthdays</h1>
+
+    <a href="/">
+        <button>Home</button>
+    </a>
+
+    <br><br>
+
+    {% if birthdays %}
+
+        <table border="1" cellpadding="10">
+
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>WhatsApp</th>
+            </tr>
+
+            {% for birthday in birthdays %}
+
+            <tr>
+
+                <td>{{ birthday[1] }}</td>
+
+                <td>{{ birthday[2] }}</td>
+
+                <td>
+                <a href="https://wa.me/{{ birthday[2] }}?text={{ birthday[4].replace('{name}', birthday[1]) }}"
+                target="_blank">
+                        <button>WhatsApp</button>
+
+                    </a>
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    {% else %}
+
+        <p>No birthdays today.</p>
+
+    {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Birthdays</title>
+</head>
+<body>
+
+    <h1>🔍 Search Birthdays</h1>
+
+    <a href="/">
+        <button>Home</button>
+    </a>
+
+    <a href="/birthdays">
+        <button>View Birthdays</button>
+    </a>
+
+    <br><br>
+
+    <form method="GET">
+
+        <input
+            type="text"
+            name="q"
+            placeholder="Search by name or phone"
+            value="{{ search_term }}"
+        >
+
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+    <br>
+
+    {% if search_term %}
+
+        <h2>Results</h2>
+
+        <table border="1" cellpadding="10">
+
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Birthday</th>
+                <th>Message</th>
+            </tr>
+
+            {% for birthday in results %}
+
+            <tr>
+                <td>{{ birthday[0] }}</td>
+                <td>{{ birthday[1] }}</td>
+                <td>{{ birthday[2] }}</td>
+                <td>{{ birthday[3] }}</td>
+                <td>{{ birthday[4] }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    {% endif %}
+
+</body>
+</html>

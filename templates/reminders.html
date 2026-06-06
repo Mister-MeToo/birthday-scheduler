@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Birthday Reminders</title>
+</head>
+<body>
+
+    <h1>🔔 Birthday Reminders</h1>
+
+    <a href="/">
+        <button>Home</button>
+    </a>
+
+    <br><br>
+
+    {% if birthdays %}
+
+    <table border="1" cellpadding="10">
+
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Preview</th>
+            <th>WhatsApp</th>
+        </tr>
+
+        {% for birthday in birthdays %}
+
+        <tr>
+
+            <td>{{ birthday[1] }}</td>
+
+            <td>{{ birthday[2] }}</td>
+
+            <td>
+                {{ birthday[4].replace('{name}', birthday[1]) }}
+            </td>
+
+            <td>
+
+                <a href="https://wa.me/{{ birthday[2] }}?text={{ birthday[4].replace('{name}', birthday[1]) }}"
+                   target="_blank">
+
+                    <button>Send Message</button>
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% else %}
+
+        <p>No reminders today.</p>
+
+    {% endif %}
+
+</body>
+</html>
