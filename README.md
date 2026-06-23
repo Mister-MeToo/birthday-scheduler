@@ -105,3 +105,86 @@ A Flask-powered Birthday Scheduler that helps users manage birthdays, send autom
 * HTML/CSS/JavaScript
 * Bootstrap
 * Jinja2 Templates
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Mister-MeToo/birthday-scheduler.git
+cd birthday-scheduler
+```
+
+### 2. Create Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+### 3. Activate Virtual Environment
+
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Mac/Linux:
+
+```bash
+source venv/bin/activate
+```
+
+### 4. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Create Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+SECRET_KEY=your_secret_key
+
+EMAIL_ADDRESS=your_email@gmail.com
+EMAIL_PASSWORD=your_gmail_app_password
+
+TWILIO_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+```
+
+### 6. Initialize Database
+
+```bash
+python create_db.py
+```
+
+### 7. Run the Application
+
+```bash
+python app.py
+```
+
+### 8. Open in Browser
+
+```text
+http://127.0.0.1:5000
+```
+
+## Default Scheduler Jobs
+
+* Checks birthdays every minute
+* Sends birthday messages automatically at 09:00 AM
+* Prevents duplicate sends using delivery logs
+
+## Future Improvements
+
+* Cloud deployment
+* Multi-user birthday collections
+* SMS notifications
+* Google Calendar integration
+* Advanced analytics dashboard
+* Mobile application
+
