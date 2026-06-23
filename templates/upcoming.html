@@ -1,95 +1,89 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Upcoming Birthdays</title>
+{% extends "base.html" %}
+{% block title %}Upcoming Birthdays{% endblock %}
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+{% block content %}
+<div class="container">
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+    <h1 style="text-align:center;">📅 Upcoming Birthdays</h1>
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        button {
-            cursor: pointer;
-            background: #25D366;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 5px;
-        }
-    </style>
-
-</head>
-
-<body>
-
-    <h1>🎂 Upcoming Birthdays</h1>
-
-    <a href="/"><button>Home</button></a>
-    <a href="/birthdays"><button>View Birthdays</button></a>
-
-    <br><br>
+    <div class="top-buttons">
+        <a href="/"><button class="btn-home">🏠 Home</button></a>
+        <a href="/birthdays"><button class="btn-home">📋 View All</button></a>
+    </div>
 
     {% if upcoming %}
+    <div class="scroll-table">
+        <table>
+            <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Birthday</th>
+                <th>Days Away</th>
+                <th>Age</th>
+                <th>Turning</th>
+                <th>WhatsApp</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for person in upcoming %}
+            <tr style="{% if person.days <= 1 %}background:#fff3cd;{% endif %}">
 
-    <table>
+                <td>
+                    {% if person.photo %}
+                    <img src="{{ person.photo }}" width="45" height="45"
+                         style="border-radius:50%;object-fit:cover;display:block;">
+                    {% else %}
+                    <div style="width:45px;height:45px;border-radius:50%;background:#3498db;
+                        color:white;display:flex;align-items:center;justify-content:center;
+                        font-weight:bold;font-size:18px;">
+                        {{ person.name[0].upper() }}
+                    </div>
+                    {% endif %}
+                </td>
 
-        <tr>
-            <th>Name</th>
-            <th>Birthday</th>
-            <th>Days Away</th>
-            <th>WhatsApp</th>
-        </tr>
+                <td style="{% if person.days <= 1 %}color:#2c3e50;{% endif %}">
+                    <a href="/profile/{{ person.id }}"
+                       style="color:{% if person.days <= 1 %}#2c3e50{% else %}var(--text){% endif %};
+                          font-weight:bold;text-decoration:underline dotted;">
+                        {{ person.name }}
+                    </a>
+                </td>
 
-        {% for person in upcoming %}
+                <td style="{% if person.days <= 1 %}color:#2c3e50;{% endif %}">{{ person.birthday }}</td>
 
-        <tr>
+                <td>
+                    {% if person.days == 0 %}
+                    <span style="background:#2ecc71;color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold;">TODAY 🎉</span>
+                    {% elif person.days == 1 %}
+                    <span style="background:#e74c3c;color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold;">Tomorrow</span>
+                    {% elif person.days <= 7 %}
+                    <span style="background:#e74c3c;color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold;">{{ person.days }} Days</span>
+                    {% else %}
+                    <span style="background:#3498db;color:white;padding:5px 12px;border-radius:20px;font-size:13px;font-weight:bold;">{{ person.days }} Days</span>
+                    {% endif %}
+                </td>
 
-            <td>{{ person.name }}</td>
+                <td style="{% if person.days <= 1 %}color:#2c3e50;{% endif %}">{{ person.age }}</td>
+                <td style="{% if person.days <= 1 %}color:#2c3e50;{% endif %}">{{ person.turning_age }}</td>
 
-            <td>{{ person.birthday }}</td>
+                <td>
+                    <a href="{{ person.whatsapp_link }}" target="_blank">
+                        <button class="btn-send" style="padding:7px 12px;font-size:13px;">WhatsApp</button>
+                    </a>
+                </td>
 
-            <td>
-                {% if person.days == 0 %}
-                    TODAY 🎉
-                {% elif person.days == 1 %}
-                    Tomorrow
-                {% else %}
-                    {{ person.days }} days
-                {% endif %}
-            </td>
-
-            <td>
-                <a href="{{ person.whatsapp_link }}" target="_blank">
-                    <button>WhatsApp</button>
-                </a>
-            </td>
-
-        </tr>
-
-        {% endfor %}
-
-    </table>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     {% else %}
-
+    <div class="card" style="text-align:center;">
         <p>No birthdays in the next 30 days.</p>
-
+    </div>
     {% endif %}
 
-</body>
-</html>
+</div>
+{% endblock %}

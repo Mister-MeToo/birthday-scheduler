@@ -62,11 +62,7 @@ def render_message(template, context):
 # ==============================
 def send_whatsapp_message(phone, message):
 
-    print(
-        f"[WHATSAPP] Sending to {phone}: {message}"
-    )
-
-
+    print("[WHATSAPP] Birthday message queued")
 # ==============================
 # MAIN CHECK FUNCTION
 # ==============================
@@ -112,9 +108,7 @@ def check_birthdays():
             context
         )
 
-        print(
-            f"Sending to {name} ({phone})"
-        )
+        print(f"Sending to {name}")
 
         send_whatsapp_message(
             phone,
@@ -124,8 +118,6 @@ def check_birthdays():
         email_body = f"""
 Today is {name}'s birthday!
 
-Phone:
-{phone}
 
 Suggested Message:
 {message}

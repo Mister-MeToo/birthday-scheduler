@@ -1,63 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Birthday Reminders</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Reminders{% endblock %}
 
-    <h1>🔔 Birthday Reminders</h1>
+{% block content %}
+<div class="container">
 
-    <a href="/">
-        <button>Home</button>
-    </a>
+    <h1 style="text-align:center;">🔔 Birthday Reminders</h1>
 
-    <br><br>
+    <div class="top-buttons">
+        <a href="/"><button class="btn-home">🏠 Home</button></a>
+    </div>
 
     {% if birthdays %}
-
-    <table border="1" cellpadding="10">
-
-        <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Preview</th>
-            <th>WhatsApp</th>
-        </tr>
-
-        {% for birthday in birthdays %}
-
-        <tr>
-
-            <td>{{ birthday[1] }}</td>
-
-            <td>{{ birthday[2] }}</td>
-
-            <td>
-                {{ birthday[4].replace('{name}', birthday[1]) }}
-            </td>
-
-            <td>
-
-                <a href="https://wa.me/{{ birthday[2] }}?text={{ birthday[4].replace('{name}', birthday[1]) }}"
-                   target="_blank">
-
-                    <button>Send Message</button>
-
-                </a>
-
-            </td>
-
-        </tr>
-
-        {% endfor %}
-
-    </table>
-
+    <div class="scroll-table">
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Message Preview</th>
+                <th>WhatsApp</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for birthday in birthdays %}
+            <tr>
+                <td><strong>{{ birthday[1] }}</strong></td>
+                <td>{{ birthday[2] }}</td>
+                <td>{{ birthday[4].replace('{name}', birthday[1]) }}</td>
+                <td>
+                    <a href="https://wa.me/{{ birthday[2] }}?text={{ birthday[4].replace('{name}', birthday[1]) }}"
+                       target="_blank">
+                        <button class="btn-send">Send Message</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
     {% else %}
-
-        <p>No reminders today.</p>
-
+    <div class="card" style="text-align:center;">
+        <p>No reminders today. 🎉</p>
+    </div>
     {% endif %}
 
-</body>
-</html>
+</div>
+{% endblock %}

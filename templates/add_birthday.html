@@ -1,29 +1,71 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Birthday</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Add Birthday{% endblock %}
 
-<h1>Add Birthday</h1>
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width:550px;margin:auto;">
 
-<form method="POST">
+        <h1 style="text-align:center;">➕ Add Birthday</h1>
 
-    <label>Name:</label><br>
-    <input type="text" name="name" required><br><br>
+        <form method="POST" enctype="multipart/form-data">
 
-    <label>Phone Number:</label><br>
-    <input type="text" name="phone" required><br><br>
+            <label>Profile Photo</label>
+            <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px;">
+                <div id="placeholder" style="width:80px;height:80px;border-radius:50%;background:#3498db;
+                color:white;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;">
+                    👤
+                </div>
+                <img id="preview" src="" alt="Preview"
+                     style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #3498db;display:none;flex-shrink:0;">
+                <div>
+                    <label style="display:inline-block;padding:10px 16px;background:#3498db;color:white;
+                    border-radius:8px;cursor:pointer;font-weight:bold;margin:0;" for="photo">
+                        📷 Choose Photo
+                    </label>
+                    <input type="file" id="photo" name="photo" accept="image/*" onchange="previewPhoto(this)"
+                           style="display:none;">
+                    <p style="margin:5px 0 0;color:var(--subtext);font-size:13px;">JPG, PNG, GIF, WEBP</p>
+                </div>
+            </div>
 
-    <label>Birthday:</label><br>
-    <input type="date" name="birthday" required><br><br>
+            <label>Full Name</label>
+            <input type="text" name="name" placeholder="e.g. John Doe" required>
 
-    <label>Message:</label><br>
-    <textarea name="message"></textarea><br><br>
+            <label>Phone Number</label>
+            <input type="text" name="phone" placeholder="e.g. 27821234567" required>
 
-    <button type="submit">Save</button>
+            <label>Birthday</label>
+            <input type="date" name="birthday" required>
 
-</form>
+            <label>Message Template</label>
+            <textarea name="message" rows="4" placeholder="Happy Birthday {name}! 🎉"></textarea>
 
-</body>
-</html>
+            <button type="submit" class="btn-add" style="width:100%;padding:14px;font-size:16px;">
+                ✅ Save Birthday
+            </button>
+        </form>
+
+        <a href="/birthdays" style="display:block;text-align:center;margin-top:15px;color:#3498db;">
+            ← Back to Birthdays
+        </a>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function previewPhoto(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('preview').style.display = 'block';
+                document.getElementById('placeholder').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+{% endblock %}

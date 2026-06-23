@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div style="
+                background:#d4edda;
+                color:#155724;
+                padding:12px;
+                border-radius:8px;
+                margin-bottom:15px;
+                border:1px solid #c3e6cb;
+            ">
+    {{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container">
+
+    <div class="card" style="max-width:500px;margin:auto;">
+
+        <h1>Login</h1>
+
+        <form method="POST">
+
+            <label>Email</label>
+            <input type="email" name="email" required>
+
+            <label>Password</label>
+            <input type="password" name="password" required>
+
+            <button type="submit" class="btn-home">
+                Login
+            </button>
+
+        </form>
+
+        <p>
+            No account?
+            <a href="/register">Register</a>
+        </p>
+
+        <p>
+            <a href="{{ url_for('forgot_password') }}">
+                Forgot Password?
+            </a>
+        </p>
+
+    </div>
+</div>
+{% endblock %}

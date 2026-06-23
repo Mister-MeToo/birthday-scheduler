@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Send Email{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width:550px;margin:auto;">
+
+        <h1 style="text-align:center;">📧 Send Birthday Email</h1>
+
+        <div style="text-align:center;margin-bottom:25px;">
+            {% if birthday[5] %}
+            <img src="{{ birthday[5] }}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #3498db;">
+            {% else %}
+            <div style="width:80px;height:80px;border-radius:50%;background:#3498db;color:white;
+                display:flex;align-items:center;justify-content:center;font-size:32px;
+                font-weight:bold;margin:auto;">
+                {{ birthday[1][0].upper() }}
+            </div>
+            {% endif %}
+            <h2 style="margin:10px 0 0;">{{ birthday[1] }}</h2>
+            <p style="color:var(--subtext);">🎂 {{ birthday[3] }}</p>
+        </div>
+
+        <form method="POST">
+
+            <label>Recipient Email</label>
+            <input type="email" name="email" placeholder="e.g. john@gmail.com" required>
+
+            <label>Message</label>
+            <textarea name="message" rows="5">{{ default_message }}</textarea>
+
+            <label>Or pick a template</label>
+            <select onchange="document.querySelector('textarea[name=message]').value = this.value">
+                <option value="">— Select a template —</option>
+                {% for t in templates %}
+                <option value="{{ t[2] }}">{{ t[1] }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn-send" style="width:100%;padding:14px;font-size:16px;margin-top:10px;">
+                📧 Send Email
+            </button>
+        </form>
+
+        <a href="/birthdays" style="display:block;text-align:center;margin-top:15px;color:#3498db;">
+            ← Back to Birthdays
+        </a>
+
+    </div>
+</div>
+{% endblock %}

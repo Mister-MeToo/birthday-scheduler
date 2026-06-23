@@ -1,98 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Import Birthdays</title>
+{% extends "base.html" %}
+{% block title %}Import Birthdays{% endblock %}
 
-    <style>
-
-    body{
-        font-family: Arial, sans-serif;
-        background:#f4f6f9;
-        margin:0;
-        padding:40px;
-    }
-
-    .container{
-        max-width:600px;
-        margin:auto;
-        background:white;
-        padding:40px;
-        border-radius:12px;
-        box-shadow:0 4px 10px rgba(0,0,0,0.1);
-        text-align:center;
-    }
-
-    h1{
-        color:#2c3e50;
-        margin-bottom:25px;
-    }
-
-    input[type="file"]{
-        padding:10px;
-        width:100%;
-        margin-bottom:20px;
-    }
-
-    button{
-        border:none;
-        padding:12px 18px;
-        border-radius:6px;
-        cursor:pointer;
-        color:white;
-        font-weight:bold;
-        transition:0.3s;
-    }
-
-    button:hover{
-        opacity:0.85;
-        transform:translateY(-2px);
-    }
-
-    .upload-btn{
-        background:#e67e22;
-    }
-
-    .home-btn{
-        background:#3498db;
-    }
-
-    .buttons{
-        display:flex;
-        justify-content:center;
-        gap:10px;
-        margin-top:20px;
-    }
-
-    </style>
-
-</head>
-<body>
-
+{% block content %}
 <div class="container">
+    <div class="card" style="max-width:600px;margin:auto;text-align:center;">
 
-    <h1>📥 Import Birthdays</h1>
+        <h1>📥 Import Birthdays</h1>
 
-    <form method="POST" enctype="multipart/form-data">
+        <p style="color:var(--subtext);">Upload a CSV file with columns: Name, Phone, Birthday, Message</p>
 
-        <input type="file" name="file" accept=".csv" required>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".csv" required>
+            <div style="display:flex;justify-content:center;gap:10px;margin-top:10px;">
+                <button type="submit" class="btn-import">📤 Upload CSV</button>
+                <a href="/"><button type="button" class="btn-home">🏠 Home</button></a>
+            </div>
+        </form>
 
-        <div class="buttons">
-
-            <button type="submit" class="upload-btn">
-                📤 Upload CSV
-            </button>
-
-            <a href="/">
-                <button type="button" class="home-btn">
-                    🏠 Home
-                </button>
-            </a>
-
-        </div>
-
-    </form>
-
+    </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

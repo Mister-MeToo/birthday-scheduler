@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>{% block title %}Birthday Scheduler{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        :root {
+            --bg: #f4f6f9;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --subtext: #777;
+            --border: #ddd;
+            --row-alt: #f8f9fa;
+            --row-hover: #eef5ff;
+            --input-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        body.dark {
+            --bg: #0d1117;
+            --card: #161b22;
+            --text: #e6edf3;
+            --subtext: #8b949e;
+            --border: #30363d;
+            --row-alt: #1f2937;
+            --row-hover: #2d3748;
+            --input-bg: #1f2937;
+            --shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
+            color: var(--text);
+        }
+
+        a { text-decoration: none; }
+
+        button {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+            color: white;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:hover {
+            opacity: 0.85;
+            transform: translateY(-1px);
+        }
+
+        .btn-home     { background: #3498db; }
+        .btn-add      { background: #2ecc71; }
+        .btn-edit     { background: #f39c12; }
+        .btn-delete   { background: #e74c3c; }
+        .btn-send     { background: #25D366; }
+        .btn-upcoming { background: #9b59b6; }
+        .btn-import   { background: #e67e22; }
+        .btn-reminder { background: #f39c12; }
+
+        .top-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            background: var(--input-bg);
+            color: var(--text);
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        /* Tables: wrapper handles the horizontal scroll, not the table itself */
+        .scroll-table {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 14px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        body.dark th { background: #1f2937; }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        tr:nth-child(even) { background: var(--row-alt); }
+        tr:hover { background: var(--row-hover); }
+
+        /* Generic responsive grid helper for inline grid blocks in templates */
+        .grid-auto {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 999;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #2c3e50;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        body.dark .theme-toggle {
+            background: #f1c40f;
+            color: #000;
+        }
+
+        /* ============================== */
+        /* TABLET (≤768px) */
+        /* ============================== */
+        @media (max-width: 768px) {
+            body { padding: 12px; padding-top: 60px; }
+            .card { padding: 16px; }
+            table { font-size: 13px; min-width: 500px; }
+            th, td { padding: 9px 7px; }
+            .top-buttons { gap: 6px; }
+            button { padding: 9px 13px; font-size: 13px; }
+            h1 { font-size: 22px; }
+            h2 { font-size: 19px; }
+
+            .grid-2col { grid-template-columns: 1fr 1fr; gap: 10px; }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+        }
+
+        /* ============================== */
+        /* PHONE (≤480px) */
+        /* ============================== */
+        @media (max-width: 480px) {
+            body { padding: 8px; padding-top: 56px; }
+            .container { max-width: 100%; }
+            .card { padding: 12px; border-radius: 10px; }
+
+            h1 { font-size: 19px; line-height: 1.3; }
+            h2 { font-size: 17px; }
+            h3 { font-size: 15px; }
+
+            /* Buttons take more of the row, easier to tap */
+            .top-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .top-buttons a, .top-buttons button {
+                width: 100%;
+            }
+            .top-buttons button {
+                width: 100%;
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            /* Action buttons inside table rows (Edit/Delete/Send) still wrap, just smaller */
+            table { min-width: 480px; font-size: 12px; }
+            th, td { padding: 7px 5px; }
+
+            input, textarea, select {
+                font-size: 14px;
+                padding: 11px;
+            }
+
+            /* Stat / analytic card grids go to 2 columns instead of auto-fit-many */
+            .grid-auto {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            /* Profile-style 2-column stat grid collapses to 1 column */
+            .grid-2col {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .theme-toggle {
+                width: 38px;
+                height: 38px;
+                font-size: 16px;
+                top: 8px;
+                right: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
+
+{% block content %}{% endblock %}
+
+<script>
+    function toggleTheme() {
+        document.body.classList.toggle('dark');
+        const btn = document.querySelector('.theme-toggle');
+        const isDark = document.body.classList.contains('dark');
+        btn.textContent = isDark ? '☀️' : '🌙';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    window.onload = function () {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+        {% block onload %}{% endblock %}
+    };
+</script>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>

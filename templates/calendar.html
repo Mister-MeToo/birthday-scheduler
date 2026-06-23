@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+{% block title %}Birthday Calendar{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h1 style="text-align:center;">📅 Birthday Calendar</h1>
+
+    <div class="top-buttons">
+        <a href="/"><button class="btn-home">🏠 Home</button></a>
+        <a href="/birthdays"><button class="btn-home">📋 View All</button></a>
+    </div>
+
+    <!-- Month Navigation -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:25px;">
+        <button class="btn-home" onclick="changeMonth(-1)">◀ Prev</button>
+        <h2 id="monthTitle" style="margin:0;min-width:160px;text-align:center;"></h2>
+        <button class="btn-home" onclick="changeMonth(1)">Next ▶</button>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="card" id="calendarCard" style="padding:20px;">
+
+        <!-- Day Headers -->
+        <div class="cal-headers" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;">
+            <div class="cal-header-cell">Sun</div>
+            <div class="cal-header-cell">Mon</div>
+            <div class="cal-header-cell">Tue</div>
+            <div class="cal-header-cell">Wed</div>
+            <div class="cal-header-cell">Thu</div>
+            <div class="cal-header-cell">Fri</div>
+            <div class="cal-header-cell">Sat</div>
+        </div>
+
+        <!-- Calendar Days -->
+        <div id="calendarGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
+
+    </div>
+
+    <!-- Birthday List for Selected Day -->
+    <div id="dayDetail" style="display:none;" class="card">
+        <h3 id="dayDetailTitle" style="margin-top:0;"></h3>
+        <div id="dayDetailContent"></div>
+    </div>
+
+    <!-- Legend -->
+    <div class="card" style="display:flex;flex-wrap:wrap;gap:15px;align-items:center;">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:14px;height:14px;border-radius:50%;background:#3498db;flex-shrink:0;"></div>
+            <span style="color:var(--subtext);font-size:13px;">Has birthday</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:14px;height:14px;border-radius:50%;background:#2ecc71;flex-shrink:0;"></div>
+            <span style="color:var(--subtext);font-size:13px;">Today</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:14px;height:14px;border-radius:50%;background:#e74c3c;flex-shrink:0;"></div>
+            <span style="color:var(--subtext);font-size:13px;">Birthday today</span>
+        </div>
+    </div>
+
+    <!-- Full Birthday List -->
+    <h2 style="margin-top:30px;">🎂 All Birthdays This Month</h2>
+    <div id="monthList" class="card">
+        <p style="color:var(--subtext);text-align:center;">No birthdays this month.</p>
+    </div>
+
+</div>
+
+<style>
+    .cal-header-cell {
+        text-align: center;
+        font-weight: bold;
+        color: var(--subtext);
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .cal-day {
+        min-height: 80px;
+        border-radius: 8px;
+        padding: 6px;
+        transition: 0.2s;
+        position: relative;
+    }
+
+    .cal-day-number {
+        font-weight: bold;
+        font-size: 15px;
+    }
+
+    .cal-day-names {
+        font-size: 11px;
+        margin-top: 4px;
+        line-height: 1.4;
+        overflow: hidden;
+    }
+
+    /* TABLET */
+    @media (max-width: 768px) {
+        #calendarCard { padding: 12px; }
+        .cal-header-cell { font-size: 12px; padding: 6px 2px; }
+        .cal-day { min-height: 64px; padding: 4px; border-radius: 6px; }
+        .cal-day-number { font-size: 13px; }
+        .cal-day-names { font-size: 9px; }
+    }
+
+    /* PHONE — names don't fit at all, switch to dot indicators */
+    @media (max-width: 480px) {
+        #calendarCard { padding: 8px; }
+        .cal-headers, #calendarGrid { gap: 3px; }
+        .cal-header-cell { font-size: 10px; padding: 4px 0; }
+        .cal-day { min-height: 44px; padding: 2px; border-radius: 5px; }
+        .cal-day-number { font-size: 12px; }
+
+        /* Hide stacked names on phone — replaced by a single dot, tap to view list */
+        .cal-day-names.full { display: none; }
+        .cal-day-dot {
+            display: block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            margin: 3px auto 0;
+        }
+    }
+
+    @media (min-width: 481px) {
+        .cal-day-dot { display: none; }
+    }
+</style>
+
+<!-- Birthday data from Flask -->
+<script>
+    const birthdayData = {{ birthdays | tojson }};
+
+    // Build lookup: "MM-DD" -> [{name, birthday, id}]
+    const bdMap = {};
+    birthdayData.forEach(b => {
+        const parts = b[1].split('-');
+        const key = parts[1] + '-' + parts[2]; // MM-DD
+        if (!bdMap[key]) bdMap[key] = [];
+        bdMap[key].push({ name: b[0], birthday: b[1], id: b[2] });
+    });
+
+    const today = new Date();
+    let currentYear = today.getFullYear();
+    let currentMonth = today.getMonth(); // 0-indexed
+
+    const monthNames = [
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+    ];
+
+    function changeMonth(dir) {
+        currentMonth += dir;
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+        renderCalendar();
+    }
+
+    function isPhoneWidth() {
+        return window.innerWidth <= 480;
+    }
+
+    function renderCalendar() {
+        document.getElementById('monthTitle').textContent =
+            monthNames[currentMonth] + ' ' + currentYear;
+
+        const grid = document.getElementById('calendarGrid');
+        grid.innerHTML = '';
+
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+        const isCurrentMonth = (
+            currentMonth === today.getMonth() &&
+            currentYear === today.getFullYear()
+        );
+
+        const phone = isPhoneWidth();
+
+        // Empty cells before first day
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.style.cssText = 'min-height:inherit;';
+            grid.appendChild(empty);
+        }
+
+        // Day cells
+        for (let day = 1; day <= daysInMonth; day++) {
+            const mm = String(currentMonth + 1).padStart(2, '0');
+            const dd = String(day).padStart(2, '0');
+            const key = mm + '-' + dd;
+            const hasBirthday = bdMap[key] && bdMap[key].length > 0;
+            const isToday = isCurrentMonth && day === today.getDate();
+
+            const bg = (isToday && hasBirthday) ? '#e74c3c' :
+                isToday ? '#2ecc71' :
+                    hasBirthday ? '#3498db' :
+                        'var(--row-alt)';
+            const color = (isToday || hasBirthday) ? 'white' : 'var(--text)';
+
+            const cell = document.createElement('div');
+            cell.className = 'cal-day';
+            cell.style.background = bg;
+            cell.style.color = color;
+            cell.style.cursor = hasBirthday ? 'pointer' : 'default';
+
+            // On phone: show a dot instead of stacked names to avoid overflow
+            const namesHtml = hasBirthday
+                ? (phone
+                    ? `<span class="cal-day-dot"></span>`
+                    : `<div class="cal-day-names full">${bdMap[key].map(b => `🎂 ${b.name}`).join('<br>')}</div>`)
+                : '';
+
+            cell.innerHTML = `
+                <div class="cal-day-number">${day}</div>
+                ${namesHtml}
+            `;
+
+            if (hasBirthday) {
+                cell.addEventListener('mouseenter', () => {
+                    cell.style.opacity = '0.85';
+                });
+                cell.addEventListener('mouseleave', () => {
+                    cell.style.opacity = '1';
+                });
+                cell.addEventListener('click', () => showDayDetail(day, key));
+            }
+
+            grid.appendChild(cell);
+        }
+
+        renderMonthList();
+        hideDayDetail();
+    }
+
+    function showDayDetail(day, key) {
+        const people = bdMap[key] || [];
+
+        document.getElementById('dayDetailTitle').textContent =
+            `🎂 Birthdays on ${monthNames[currentMonth]} ${day}`;
+
+        document.getElementById('dayDetailContent').innerHTML = people.map(p => `
+            <div style="display:flex;align-items:center;justify-content:space-between;
+                        gap:10px;padding:10px 0;border-bottom:1px solid var(--border);
+                        flex-wrap:wrap;">
+                <div>
+                    <strong>${p.name}</strong>
+                    <div style="color:var(--subtext);font-size:13px;">${p.birthday}</div>
+                </div>
+                <a href="/profile/${p.id}">
+                    <button class="btn-home" style="padding:7px 12px;font-size:13px;">
+                        View Profile
+                    </button>
+                </a>
+            </div>
+        `).join('');
+
+        const detail = document.getElementById('dayDetail');
+        detail.style.display = 'block';
+        detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideDayDetail() {
+        document.getElementById('dayDetail').style.display = 'none';
+    }
+
+    function renderMonthList() {
+        const mm = String(currentMonth + 1).padStart(2, '0');
+        const monthBirthdays = [];
+
+        Object.keys(bdMap).forEach(key => {
+            if (key.startsWith(mm + '-')) {
+                bdMap[key].forEach(b => {
+                    monthBirthdays.push({ ...b, day: parseInt(key.split('-')[1]) });
+                });
+            }
+        });
+
+        monthBirthdays.sort((a, b) => a.day - b.day);
+
+        const container = document.getElementById('monthList');
+
+        if (monthBirthdays.length === 0) {
+            container.innerHTML = '<p style="color:var(--subtext);text-align:center;">No birthdays this month.</p>';
+            return;
+        }
+
+        container.innerHTML = monthBirthdays.map(b => `
+            <div style="display:flex;align-items:center;justify-content:space-between;
+                        padding:12px 0;border-bottom:1px solid var(--border);
+                        flex-wrap:wrap;gap:10px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:38px;height:38px;border-radius:50%;background:#3498db;
+                                color:white;display:flex;align-items:center;justify-content:center;
+                                font-weight:bold;font-size:15px;flex-shrink:0;">
+                        ${b.day}
+                    </div>
+                    <div>
+                        <strong>${b.name}</strong>
+                        <div style="color:var(--subtext);font-size:13px;">${b.birthday}</div>
+                    </div>
+                </div>
+                <a href="/profile/${b.id}">
+                    <button class="btn-home" style="padding:7px 12px;font-size:13px;">
+                        View Profile
+                    </button>
+                </a>
+            </div>
+        `).join('');
+    }
+
+    // Re-render on resize so dot/name switch happens live (e.g. rotating a tablet)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(renderCalendar, 200);
+    });
+
+    // Initial render
+    renderCalendar();
+</script>
+{% endblock %}

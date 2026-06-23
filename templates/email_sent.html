@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Email Sent{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card" style="max-width:500px;margin:auto;text-align:center;padding:40px;">
+
+        {% if error %}
+        <div style="font-size:60px;">❌</div>
+        <h2>Email Failed</h2>
+        <p style="color:var(--subtext);">Something went wrong. Check your Gmail App Password and try again.</p>
+        {% else %}
+        <div style="font-size:60px;">✅</div>
+        <h2>Email Sent!</h2>
+        <p style="color:var(--subtext);">Birthday email sent to <strong>{{ email }}</strong> for <strong>{{ name }}</strong>.</p>
+        {% endif %}
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;">
+            <a href="/birthdays"><button class="btn-home">← Back to Birthdays</button></a>
+            <a href="/"><button class="btn-home">🏠 Home</button></a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

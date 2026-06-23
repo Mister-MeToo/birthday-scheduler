@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Message Templates{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h1 style="text-align:center;">📝 Message Templates</h1>
+
+    <div class="top-buttons">
+        <a href="/"><button class="btn-home">🏠 Home</button></a>
+    </div>
+
+    <!-- Add Template -->
+    <div class="card" style="margin-bottom:25px;">
+        <h3 style="margin-top:0;">➕ Add New Template</h3>
+        <form method="POST" action="/templates/add">
+            <label>Template Name</label>
+            <input type="text" name="name" placeholder="e.g. Funny, Formal, Short" required>
+            <label>Message (use {name} for the person's name)</label>
+            <textarea name="message" rows="3" placeholder="Happy Birthday {name}! 🎉"></textarea>
+            <button type="submit" class="btn-add">✅ Save Template</button>
+        </form>
+    </div>
+
+    <!-- Template List -->
+    {% if templates %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+        {% for t in templates %}
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:start;">
+                <strong style="font-size:16px;">{{ t[1] }}</strong>
+                <a href="/templates/delete/{{ t[0] }}"
+                   onclick="return confirm('Delete this template?');">
+                    <button class="btn-delete" style="padding:5px 10px;font-size:12px;">🗑</button>
+                </a>
+            </div>
+            <p style="color:var(--subtext);margin:10px 0 0;font-size:14px;">{{ t[2] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card" style="text-align:center;">
+        <p>No templates yet. Add one above!</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
