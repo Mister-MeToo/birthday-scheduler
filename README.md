@@ -1,86 +1,107 @@
 # 🎂 Birthday Scheduler
 
-A Flask-based web application that helps you store birthdays and automatically send birthday reminders via Email and WhatsApp (Twilio).
+A Flask-powered Birthday Scheduler that helps users manage birthdays, send automated greetings, and receive reminders via WhatsApp and Email.
 
----
+## Features
 
-## 🚀 Features
+### 👤 User Accounts
 
-- Add birthdays with name, phone number, and date
-- View all saved birthdays in a table
-- Edit or delete existing entries
-- Automatically detect today’s birthdays
-- Custom birthday message templates
-- Email notifications (SMTP)
-- WhatsApp notifications (Twilio API)
-- Manual “Send Now” button
-- SQLite database storage
+* User registration and login
+* Secure password hashing
+* Email verification system
+* Forgot password functionality
+* Password reset via email link
+* Protected routes using Flask-Login
 
----
+### 🎂 Birthday Management
 
-## 🔔 Notification System
+* Add birthdays with name, phone number, email, and birth date
+* Upload profile photos for contacts
+* View all birthdays in a searchable table
+* Edit birthday records
+* Delete birthday records
+* Individual profile pages for each contact
 
-### Email (SMTP)
-- Sends personalized birthday messages
-- Uses Python SMTP/email libraries
+### 📅 Birthday Tracking
 
-### WhatsApp (Twilio)
-- Sends automated WhatsApp messages
-- Uses Twilio API
+* Dashboard with birthday analytics
+* Upcoming birthdays page
+* Today's birthdays detection
+* Birthdays this month statistics
+* Upcoming birthdays this week
+* Next birthday countdown
+* Age and upcoming age calculations
+* Calendar view
 
-⚠️ Credentials are NOT included for security reasons.
+### 📊 Analytics Dashboard
 
----
+* Total birthdays tracked
+* Monthly birthday distribution
+* Oldest person tracker
+* Youngest person tracker
+* Average age calculation
+* Upcoming birthday statistics
 
-## 🛠️ Tech Stack
+### 💬 Messaging
 
-- Python
-- Flask
-- SQLite
-- HTML / Jinja2
-- Twilio API
-- SMTP Email
+* Custom birthday message templates
+* Template management system
+* WhatsApp message generation
+* One-click WhatsApp links
+* Manual WhatsApp sending
+* Automated WhatsApp birthday greetings
 
----
+### 📧 Email Features
 
-## 📁 Project Structure
+* Automated birthday emails
+* Manual email sending
+* Email verification system
+* Password reset emails
+* HTML email templates
 
-BirthdayScheduler/
-├── app.py
-├── scheduler.py
-├── create_db.py
-├── email_sender.py
-├── birthdays.db
-├── templates/
-└── static/
+### 🔔 Notifications
 
----
+* Scheduled birthday reminders
+* Automated daily birthday checks
+* Automatic birthday message delivery
+* Manual "Send Now" option
 
-## ▶️ How to Run
+### 📂 Data Management
 
-git clone https://github.com/YOUR_USERNAME/birthday-scheduler.git
-cd birthday-scheduler
+* SQLite database storage
+* CSV import birthdays
+* CSV export birthdays
+* REST API endpoints
+* Search birthdays by name or phone
+* Filter birthdays by month
 
-python -m venv venv
-venv\Scripts\activate
+### 🖼 Media Support
 
-pip install flask twilio
+* Photo uploads
+* Birthday profile pictures
+* Secure image handling
 
-python app.py
+### ⚙️ Automation
 
-Open:
-http://127.0.0.1:5000/
+* APScheduler background jobs
+* Daily birthday message scheduling
+* Delivery logging to prevent duplicate sends
 
----
+### 🌐 API
 
-## 📌 Future Improvements
+* Get all birthdays via API
+* Get birthday by ID via API
+* JSON responses
 
-- Deploy online
-- Add login system
-- Calendar view
-- Background scheduler (Celery/APScheduler)
-- SMS notifications
+## Technologies Used
 
----
-
-
+* Python
+* Flask
+* Flask-Login
+* SQLite
+* Twilio API
+* SMTP Email
+* APScheduler
+* HTML/CSS/JavaScript
+* Bootstrap
+* Jinja2 Templates
